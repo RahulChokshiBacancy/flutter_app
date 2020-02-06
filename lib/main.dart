@@ -15,29 +15,66 @@ class MyApp extends StatelessWidget {
 //    final wordPair = WordPair.random();
 
     return MaterialApp(
-      title: 'Flutter',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Flutter Demo'),
-        ),
-        body: Center(
-//          child: Text('Hello World'),
+//      title: 'Flutter',
+//      home: Scaffold(
 
-//          child: Text(wordPair.asUpperCase),
+        title: 'Startup Name Generator',
+        home: RandomWords(),
 
-          child: RandomWords(),
-
-        ),
-      ),
+//        appBar: AppBar(
+//          title: Text('Flutter Demo'),
+//        ),
+//        body: Center(
+//
+////          child: Text('Hello World'),
+//
+////          child: Text(wordPair.asUpperCase),
+//
+//          child: RandomWords(),
+//
+//        ),
+//      ),
     );
   }
 }
 
 class RandomWordsState extends State<RandomWords> {
+
+  final _suggestions = <WordPair>[];
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+
   @override
   Widget build(BuildContext context) {
     final wordPair = WordPair.random();
-    return Text(wordPair.asUpperCase);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Startup Name Generator'),
+      ),
+      body: _buildSuggestions(),
+    );
+  }
+
+  Widget _buildSuggestions() {
+    return ListView.builder(
+        padding: const EdgeInsets.all(16.0),
+        itemBuilder: /*1*/ (context, i) {
+          if (i.isOdd) return Divider(); /*2*/
+
+          final index = i ~/ 2; /*3*/
+          if (index >= _suggestions.length) {
+            _suggestions.addAll(generateWordPairs().take(10)); /*4*/
+          }
+          return _buildRow(_suggestions[index]);
+        });
+  }
+
+  Widget _buildRow(WordPair pair) {
+    return ListTile(
+      title: Text(
+        pair.asPascalCase,
+        style: _biggerFont,
+      ),
+    );
   }
 }
 
